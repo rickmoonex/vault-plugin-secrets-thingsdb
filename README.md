@@ -6,11 +6,11 @@ The ThingsDB secrets engine gives you the ability to dynamically create and revo
 
 The setup guide assumes that you're familiar with operating a HashiCorp Vault cluster and how to enable plugins.
 
-1. Download the latest plugin binary for your respective platform from the release section of this repo.
+1. Clone this repo and build the plugin using `make build`. The binary will then be placed in `./vault/plugins`.
 2. Move the binary into your Vault cluster's configured `plugin_directory`, specified in the server config:
 
     ```bash
-    mv vault-plugin-secrets-thingsdb <vault_plugin_dir>/vault-plugin-secrets-thingsdb
+    mv ./vault/plugins/vault-plugin-secrets-thingsdb <vault_plugin_dir>/vault-plugin-secrets-thingsdb
     ```
 
 3. Enable mlock so the plugin can be safely enabled and disabled:
