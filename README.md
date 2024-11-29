@@ -1,5 +1,7 @@
 # ThingsDB secrets engine for HashiCorp Vault
 
+![GitHub Release](https://img.shields.io/github/v/release/rickmoonex/vault-plugin-secrets-thingsdb)
+
 The ThingsDB secrets engine gives you the ability to dynamically create and revoke credentials for accessing ThingsDB.
 
 ## Installation
