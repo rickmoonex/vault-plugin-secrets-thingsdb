@@ -7,6 +7,7 @@ builds:
   - env:
     - 'CGO_ENABLED=0'
     mod_timestamp: '{{ .CommitTimestamp }}'
+    main: ./cmd/vault-plugin-secrets-thingsdb
     flags:
       - '-trimpath'
     ldflags:
@@ -38,8 +39,6 @@ signs:
   - artifacts: 'checksum'
     args:
       - '--batch'
-      - '--local-user'
-      - '{{ .Env.GPG_FINGERPRINT }}'
       - '--output'
       - '${signature}'
       - '--detach-sign'

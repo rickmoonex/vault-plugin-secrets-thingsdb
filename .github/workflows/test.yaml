@@ -1,0 +1,40 @@
+name: 'test'
+
+on:
+  push:
+    branches:
+    - '*'
+    tags:
+    - '*'
+  pull_request:
+    branches:
+    - 'main'
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - 'macos-latest'
+        - 'ubuntu-latest'
+        - 'windows-latest'
+
+    runs-on: '${{ matrix.os }}'
+
+    steps:
+    - uses: 'actions/checkout@v3'
+
+    - uses: 'actions/setup-go@v3'
+      with:
+        go-version: '1.23.3'
+
+    - run: 'go mod download'
+
+    - name: 'Test'
+      run: 'go test'
