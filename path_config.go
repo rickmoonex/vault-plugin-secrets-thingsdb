@@ -17,7 +17,7 @@ const (
 // required to instantiate a new FortiOS client.
 type thingsDBConfig struct {
 	Hostname string `json:"hostname"`
-	Port     uint16 `json:"port"`
+	Port     string `json:"port"`
 	Token    string `json:"token"`
 	Insecure bool   `json:"insecure"`
 }
@@ -38,7 +38,7 @@ func pathConfig(b *thingsDBBackend) *framework.Path {
 				},
 			},
 			"port": {
-				Type:        framework.TypeInt64,
+				Type:        framework.TypeString,
 				Description: "The port of the ThingsDB cluster",
 				Required:    true,
 				DisplayAttrs: &framework.DisplayAttributes{
@@ -131,7 +131,7 @@ func (b *thingsDBBackend) pathConfigWrite(ctx context.Context, req *logical.Requ
 	}
 
 	if port, ok := data.GetOk("port"); ok {
-		config.Port = port.(uint16)
+		config.Port = port.(string)
 	} else if createOperation {
 		return nil, fmt.Errorf("missing port in configuration")
 	}

@@ -4,7 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
+
+	"math/rand"
 
 	"github.com/google/uuid"
 	"github.com/hashicorp/vault/sdk/framework"
@@ -72,19 +75,35 @@ func (b *thingsDBBackend) tokenRevoke(ctx context.Context, req *logical.Request,
 	return nil, nil
 }
 
-func createToken(c *thingsDBClient, roleName string, target string, mask string) (*thingsDBToken, error) {
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func randomString(n int) string {
+	rand.Seed(time.Now().UnixNano()) // Seed the random number generator
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
+}
+
+func createToken(c *thingsDBClient, target string, mask string) (*thingsDBToken, error) {
 	// Generate random username
 	timestamp := time.Now().Unix()
-	username := fmt.Sprintf("%d_%s", timestamp, roleName)
+	username := fmt.Sprintf("%s_%d", randomString(8), timestamp)
+
+	maskInt, err := strconv.Atoi(mask)
+	if err != nil {
+		return nil, err
+	}
 
 	vars := map[string]interface{}{
 		"user":   username,
 		"target": target,
-		"mask":   mask,
+		"mask":   maskInt,
 	}
 
 	// Create the user in ThingsDB
-	_, err := c.Query("@thingsdb", "new_user({user});", vars)
+	_, err = c.Query("@thingsdb", "new_user({user});", vars)
 	if err != nil {
 		return nil, err
 	}

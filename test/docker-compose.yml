@@ -1,0 +1,10 @@
+services:
+  thingsdb:
+    image: ghcr.io/thingsdb/node
+    container_name: thingsdb_acc_test
+    ports:
+      - "9200:9200"
+      - "9210:9210"
+    environment:
+      THINGSDB_HTTP_API_PORT: "9210"
+    command: --init

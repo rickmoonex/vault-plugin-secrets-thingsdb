@@ -1,8 +1,8 @@
 package vault_plugin_secrets_thingsdb
 
 import (
-	"crypto/tls"
 	"errors"
+	"strconv"
 
 	ti "github.com/thingsdb/go-thingsdb"
 )
@@ -28,10 +28,16 @@ func newClient(config *thingsDBConfig) (*thingsDBClient, error) {
 		return nil, errors.New("client token was not defined")
 	}
 
-	tlsConfig := tls.Config{
-		InsecureSkipVerify: config.Insecure,
+	if config.Port == "" {
+		return nil, errors.New("client port not provided")
 	}
-	conn := ti.NewConn(config.Hostname, config.Port, &tlsConfig)
+
+	parsedPort, err := strconv.ParseUint(config.Port, 10, 16)
+	if err != nil {
+		return nil, err
+	}
+
+	conn := ti.NewConn(config.Hostname, uint16(parsedPort), nil)
 	if err := conn.Connect(); err != nil {
 		return nil, err
 	}

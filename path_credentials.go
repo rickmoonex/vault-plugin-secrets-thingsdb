@@ -42,7 +42,7 @@ func (b *thingsDBBackend) createToken(ctx context.Context, s logical.Storage, ro
 
 	var token *thingsDBToken
 
-	token, err = createToken(client, roleEntry.Name, roleEntry.Target, roleEntry.Mask)
+	token, err = createToken(client, roleEntry.Target, roleEntry.Mask)
 	if err != nil {
 		return nil, fmt.Errorf("error creating token: %w", err)
 	}
@@ -67,6 +67,7 @@ func (b *thingsDBBackend) createUserCreds(ctx context.Context, req *logical.Requ
 	}, map[string]interface{}{
 		"token": token.Token,
 		"role":  role.Name,
+		"user":  token.User,
 	})
 
 	if role.TTL > 0 {
